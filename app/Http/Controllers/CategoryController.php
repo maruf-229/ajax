@@ -7,6 +7,7 @@ use Carbon\Carbon;
 //use Faker\Provider\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 use Image;
 
 class CategoryController extends Controller
@@ -48,7 +49,7 @@ class CategoryController extends Controller
             $image              = $request->file('image');
             $OriginalExtension  = $image->getClientOriginalExtension();
             $image_name         = Carbon::now()->format('d-m-Y H-i-s') .'.'. $OriginalExtension;
-            $destinationPath    = 'images';
+            $destinationPath    = public_path('images');
             $resize_image       =Image::make($image->getRealPath());
             $resize_image->resize(500, 500, function($constraint){
                 $constraint->aspectRatio();
