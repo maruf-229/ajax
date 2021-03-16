@@ -6,16 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js" integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG" crossorigin="anonymous"></script>
 </head>
-
 <body>
 <section style="padding-top: 60px;">
     <div class="container">
+        <h3 align="center">Upload Image in Laravel using Ajax</h3>
+        <br />
+        <div class="alert" id="message" style="display: none"></div>
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -28,6 +29,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Description</th>
+                                <th>Image</th>
 
                             </tr>
                             </thead>
@@ -36,10 +38,13 @@
                                 <tr>
                                     <td>{{$category->name}}</td>
                                     <td>{{$category->description}}</td>
+{{--                                    <td><h1>{{ $category->image }}</h1></td>--}}
+                                    <td><img src="{{ asset('images/'.$category->image) }}" alt="Image" width="50px"> </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>
@@ -71,7 +76,7 @@
                     </div>
                     <div class="form-group">
                         <label for="image">Image</label>
-                        <input type="file" class="form-control" name="image" id="image">
+                        <input type="file"  class="form-control" name="image" id="image">
                     </div>
                     <br>
                     <button type="submit" class="btn btn-primary">Add</button>
@@ -82,34 +87,27 @@
     </div>
 </div>
 <script>
-    $(document).ready(function (){
-        $("#categoryForm").on('submit',function(e){
-            e.preventDefault();
-            var name = $("#name").val();
-            var description = $("#description").val();
-            var image = $("#image").val();
-            var _token=$("input[name=_token]").val();
+    $(document).ready(function(){
 
+        $('#categoryForm').on('submit', function(event){
+            event.preventDefault();
             $.ajax({
-                url:"{{route('category.store')}}",
-                type:"POST",
-                data:{
-                    name:name,
-                    description:description,
-                    image:image,
-                    _token:_token,
-                },
-                success: function(response){
-                    if(response){
-                        $("categoryTable tbody").prepend('<tr><td>'+response.name+'</td><td>'+response.description+'</td><td>'+response.image+'</td></tr>')
-                        $("#categoryForm")[0].reset();
-                        $('#categoryModal').modal('hide');
-                        alert("Data Saved")
-                        location.reload();
-                    }
+                url:"{{ route('category.store') }}",
+                method:"POST",
+                data:new FormData(this),
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                success:function(data)
+                {
+                    $('#message').css('display', 'block');
+                    $('#message').html(data.message);
+                    $('#message').addClass(data.class_name);
                 }
-            });
+            })
         });
+
     });
 </script>
 </body>

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use Image;
+use Validator;
 
 class CategoryController extends Controller
 {
@@ -41,24 +42,29 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = new Category();
-        $category->name=$request->name;
-        $category->description=$request->description;
+        return response()->json([
+            'message' => $request->name,
+            'class_name' => 'alert-success'
+        ]);
 
-        if($request->hasFile('image')){
-            $image              = $request->file('image');
-            $OriginalExtension  = $image->getClientOriginalExtension();
-            $image_name         = Carbon::now()->format('d-m-Y H-i-s') .'.'. $OriginalExtension;
-            $destinationPath    = public_path('images');
-            $resize_image       =Image::make($image->getRealPath());
-            $resize_image->resize(500, 500, function($constraint){
-                $constraint->aspectRatio();
-            });
-            $resize_image->save($destinationPath . '/' . $image_name);
-            $category->image    = $image_name;
-        }
-        $category->save();
-        return response()->json($category);
+//        $request->validate([
+//            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//        ]);
+//        $category = new Category;
+//        $category->name = $request->name;
+//        $category->description = $request->description;
+//
+//        if($request->hasFile('image')) {
+//                $image = $request->file('image');
+//                $new_name = rand() . '.' . $image->getClientOriginalExtension();
+//                $image->move(public_path('images'), $new_name);
+//                $category->image = $new_name;
+//        }
+//        $category->save();
+//        return response()->json([
+//            'message' => 'Image Upload Successfully',
+//            'class_name' => 'alert-success'
+//        ]);
     }
 
     /**

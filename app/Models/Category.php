@@ -9,7 +9,14 @@ class Category extends Model
 {
     use HasFactory;
 
+    /**
+     * @var mixed|string
+     */
+    private $image;
+
     public static function orderBy(string $string, string $string1)
     {
+
     }
+//protected $fillable=['name','description','image'];
 }
