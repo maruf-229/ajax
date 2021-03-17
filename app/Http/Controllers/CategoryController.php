@@ -47,6 +47,7 @@ class CategoryController extends Controller
             'class_name' => 'alert-success'
         ]);
 
+<<<<<<< Updated upstream
 //        $request->validate([
 //            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 //        ]);
@@ -65,6 +66,23 @@ class CategoryController extends Controller
 //            'message' => 'Image Upload Successfully',
 //            'class_name' => 'alert-success'
 //        ]);
+=======
+        if($request->hasFile('image')){
+            $image              = $request->file('image');
+            $OriginalExtension  = $image->getClientOriginalExtension();
+            $image_name         = Carbon::now()->format('d-m-Y H-i-s') .'.'. $OriginalExtension;
+            $destinationPath    = 'images';
+            $resize_image       =Image::make($image->getRealPath());
+            $resize_image->resize(500, 500, function($constraint){
+                $constraint->aspectRatio();
+            });
+            $resize_image->save($destinationPath . '/' . $image_name);
+
+            $category->image    = $image_name;
+        }
+        $category->save();
+        return response()->json($category);
+>>>>>>> Stashed changes
     }
 
     /**
