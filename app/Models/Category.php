@@ -10,6 +10,11 @@ class Category extends Model
     use HasFactory;
 
     /**
+     * @var mixed
+     */
+    private static $this;
+
+    /**
      * @var mixed|string
      */
     private $image;
@@ -18,5 +23,6 @@ class Category extends Model
     {
 
     }
-//protected $fillable=['name','description','image'];
+    protected $table='categories';
+     protected $fillable=["name","description","image"];
 }

@@ -39,7 +39,7 @@
                                     <td>{{$category->name}}</td>
                                     <td>{{$category->description}}</td>
 {{--                                    <td><h1>{{ $category->image }}</h1></td>--}}
-                                    <td><img src="{{ asset('images/'.$category->image) }}" alt="Image" width="50px"> </td>
+                                    <td><img src="{{ asset('images'.$category->image) }}" alt="Image" width="50px"> </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -64,19 +64,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="" id="categoryForm" enctype="multipart/form-data">
+                <form id="categoryForm" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" />
+                        <input type="text" class="form-control" id="name" name="name">
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" cols="30" rows="10" class="form-control"></textarea>
+                        <textarea cols="30" rows="10" class="form-control" name="description" id="description"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="image">Image</label>
-                        <input type="file"  class="form-control" name="image" id="image">
+                        <input type="file"  class="form-control " name="image" id="image">
                     </div>
                     <br>
                     <button type="submit" class="btn btn-primary">Add</button>
@@ -86,28 +86,37 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function(){
+<script type="text/javascript">
+    $(document).ready(function (){
+        $('#categoryForm').on('submit',function (e){
+            e.preventDefault();
+            let name = $("input[name=name]").val();
+            let description = $("#description").val();
+            let image = $("#image").val();
+            let _token=$("input[name=_token]").val();
 
-        $('#categoryForm').on('submit', function(event){
-            event.preventDefault();
             $.ajax({
-                url:"{{ route('category.store') }}",
+                url:"{{route('category.store')}}",
                 method:"POST",
-                data:new FormData(this),
-                dataType:'JSON',
-                contentType: false,
-                cache: false,
-                processData: false,
-                success:function(data)
-                {
-                    $('#message').css('display', 'block');
-                    $('#message').html(data.message);
-                    $('#message').addClass(data.class_name);
+                data:{
+                    name:name,
+                    description:description,
+                    image:image,
+                    _token:_token,
+                },
+                success: function(response){
+                    console.log(response)
+                    alert("Data Inserted Successfully")
+                    $('#categoryTable tbody').append('<tr><td>'+name+'</td><td>'+description+'</td><td>'+image+'</td></tr>');
+                    $('#categoryModal').modal('toggle');
+                    $('#categoryForm')[0].reset();
+                },
+                error: function (error){
+                    console.log(error)
+                    alert("Data Insertion Failed");
                 }
-            })
+            });
         });
-
     });
 </script>
 </body>
