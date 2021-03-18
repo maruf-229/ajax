@@ -7,9 +7,10 @@ use Carbon\Carbon;
 //use Faker\Provider\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Image;
+//use Image;
 //use Validator;
 //use League\CommonMark\Inline\Element\Image;
+use Intervention\Image\Facades\Image;
 use function GuzzleHttp\Promise\all;
 
 class CategoryController extends Controller
