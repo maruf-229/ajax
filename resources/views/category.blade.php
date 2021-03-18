@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Category</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -28,7 +29,8 @@
                             <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Description</th>
+                                <th>email</th>
+                                <th>phone</th>
                                 <th>Image</th>
 
                             </tr>
@@ -37,7 +39,8 @@
                             @foreach ($categories as $category)
                                 <tr>
                                     <td>{{$category->name}}</td>
-                                    <td>{{$category->description}}</td>
+                                    <td>{{$category->email}}</td>
+                                    <td>{{$category->phone}}</td>
 {{--                                    <td><h1>{{ $category->image }}</h1></td>--}}
                                     <td><img src="{{ asset('images'.$category->image) }}" alt="Image" width="50px"> </td>
                                 </tr>
@@ -65,14 +68,17 @@
             </div>
             <div class="modal-body">
                 <form id="categoryForm" enctype="multipart/form-data">
-                    @csrf
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" class="form-control" id="name" name="name">
                     </div>
                     <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea cols="30" rows="10" class="form-control" name="description" id="description"></textarea>
+                        <label for="description">Email</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Phone</label>
+                        <input type="number" class="form-control" id="phone" name="phone">
                     </div>
                     <div class="form-group">
                         <label for="image">Image</label>
@@ -88,26 +94,34 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function (){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         $('#categoryForm').on('submit',function (e){
             e.preventDefault();
             let name = $("input[name=name]").val();
-            let description = $("#description").val();
+            let email = $("#email").val();
+            let phone = $("#phone").val();
             let image = $("#image").val();
             let _token=$("input[name=_token]").val();
+
 
             $.ajax({
                 url:"{{route('category.store')}}",
                 method:"POST",
-                data:{
-                    name:name,
-                    description:description,
-                    image:image,
-                    _token:_token,
-                },
+                data:new FormData(this),
+                dataType:'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
                 success: function(response){
                     console.log(response)
-                    alert("Data Inserted Successfully")
-                    $('#categoryTable tbody').append('<tr><td>'+name+'</td><td>'+description+'</td><td>'+image+'</td></tr>');
+                    // alert(name+' '+email+' '+phone+' '+image);
+
+                    alert("Data inserted successfully");
+                    $('#categoryTable tbody').append('<tr><td>'+name+'</td><td>'+email+'</td><td>'+phone+'</td><td>'+image+'</td></tr>');
                     $('#categoryModal').modal('toggle');
                     $('#categoryForm')[0].reset();
                 },

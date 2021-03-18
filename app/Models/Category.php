@@ -24,5 +24,5 @@ class Category extends Model
 
     }
     protected $table='categories';
-     protected $fillable=["name","description","image"];
+     protected $fillable=["name","email","phone"."image"];
 }

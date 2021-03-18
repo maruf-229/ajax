@@ -7,9 +7,9 @@ use Carbon\Carbon;
 //use Faker\Provider\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
 use Image;
-use Validator;
+//use Validator;
+//use League\CommonMark\Inline\Element\Image;
 use function GuzzleHttp\Promise\all;
 
 class CategoryController extends Controller
@@ -44,18 +44,23 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
 //        return response()->json([
-//            'message' => $request->name,
-//            'class_name' => 'alert-success'
+//            'name' => $request->name,
+//            'email' => $request->email,
+//            'phone' => $request->phone,
+//            'image' =>  $request->file('image'),
+//
 //        ]);
 
         $request->validate([
             'name' => 'required|max:255',
-            'description' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'email' => 'required',
+            'phone' => 'required',
+            //'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         $category = new Category() ;
         $category->name = $request->name;
-        $category->description = $request->description;
+        $category->email = $request->email;
+        $category->phone = $request->phone;
 
         if($request->hasFile('image')) {
             $image              = $request->file('image');
